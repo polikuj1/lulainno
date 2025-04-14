@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <script async>
+    window.addEventListener("DOMContentLoaded", () => {
+      const colorLabels = document.querySelectorAll(".color-label");
+      const typeList = document.querySelector(".type-list");
+      const typeItems = document.querySelectorAll(".type-list li");
+      const currentTheme = document.querySelector(".current-theme");
+      const navigations = document.querySelectorAll(".navigation");
+      const gridContent = document.querySelector(".grid-content");
+
+      const data = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+
+      function selectTheme() {
+        const html = document.querySelector("html");
+        html.setAttribute("data-theme", this.dataset.color);
+        currentTheme.textContent = `theme:'${this.dataset.color}'`;
+      }
+
+      function dragList() {
+        if (this.dataset.direction === "next") {
+          if (typeList.scrollLeft > typeList.offsetWidth + 20) return;
+          typeList.scrollLeft += typeList.children[0].offsetWidth;
+        } else {
+          if (typeList.scrollLeft <= 0) return;
+          typeList.scrollLeft -= typeList.children[0].offsetWidth;
+        }
+      }
+
+      function renderData(data) {
+        const innerHtml = data
+          .map((el) => {
+            return `<div><img src="https://picsum.photos/id/${
+              230 + Number(el)
+            }/400/200" style="width: 100%"/></div>`;
+          })
+          .join("");
+        gridContent.innerHTML = innerHtml;
+      }
+
+      function filterData() {
+        typeItems.forEach((el) => el.classList.remove("active"));
+        this.classList.add("active");
+        // this.scrollIntoView({ behavior: "smooth", inline: "center" });
+        let newData = [...data];
+        switch (this.textContent) {
+          case "all":
+            renderData(newData);
+            break;
+          case "type1":
+          case "type3":
+          case "type5":
+            newData = data.filter((_, index) => index % 2);
+            renderData(newData);
+            break;
+          case "type2":
+          case "type4":
+          case "type6":
+            newData = data.filter((_, index) => {
+              return index % 2 !== 1;
+            });
+            renderData(newData);
+            break;
+          default:
+            renderData(newData);
+        }
+      }
+
+      colorLabels.forEach((label) => {
+        label.addEventListener("click", selectTheme);
+      });
+
+      navigations.forEach((el) => {
+        el.addEventListener("click", dragList);
+      });
+
+      typeItems.forEach((el) => {
+        el.addEventListener("click", filterData);
+      });
+
+      renderData(data);
+    });
+  </script>
+  <body>
+    <div class="container">
+      <!--   <input id="white" type="checkbox">
+    <input id="black" type="checkbox">
+    <input id="green" type="checkbox"> -->
+      <input id="menu" type="checkbox" />
+
+      <div class="side-menu">
+        <button class="close-btn">
+          <label for="menu">X</label>
+        </button>
+        <ul>
+          <li>
+            <i class="fa-solid fa-house" style="color: #ffd43b"></i>
+            <span>home</span>
+          </li>
+          <li>
+            <i class="fa-solid fa-circle-info" style="color: #ffd43b"></i>
+            <span>about</span>
+          </li>
+          <li>
+            <i class="fa-solid fa-pen" style="color: #ffd43b"></i>
+            <span>article</span>
+          </li>
+        </ul>
+      </div>
+
+      <header>
+        <div class="color-select">
+          <span class="current-theme">select theme</span>
+          <label
+            class="color-label black"
+            data-color="black"
+            for="black"
+          ></label>
+          <label class="color-label red" data-color="red" for="black"></label>
+          <label
+            class="color-label green"
+            data-color="green"
+            for="green"
+          ></label>
+        </div>
+        <div class="header-content">
+          <button class="menu-btn">
+            <label for="menu">
+              <i
+                class="fa-solid fa-bars fa-flip-horizontal fa-lg"
+                style="color: #fafafa"
+              ></i>
+            </label>
+          </button>
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/640px-International_Pok%C3%A9mon_logo.svg.png"
+            class="logo"
+            alt=""
+          />
+        </div>
+      </header>
+      <div class="header-hold"></div>
+
+      <main class="wrap">
+        <nav class="type-wrap">
+          <ul class="type-list">
+            <li class="active">all</li>
+            <li class="">type1</li>
+            <li class="">type2</li>
+            <li class="">type3</li>
+            <li class="">type4</li>
+            <li class="">type5</li>
+            <li class="">type6</li>
+          </ul>
+          <div class="search">
+            <i class="fa-solid fa-magnifying-glass" style="color: #ffd43b"></i>
+          </div>
+          <div class="navigation prev" data-direction="prev">&lt;</div>
+          <div class="navigation next" data-direction="next">&gt;</div>
+        </nav>
+        <div class="grid-content"></div>
+      </main>
+
+      <footer>copyright gordon</footer>
+    </div>
+
+    <script
+      src="https://kit.fontawesome.com/10662d5b44.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
