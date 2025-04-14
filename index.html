@@ -15,7 +15,20 @@
       const navigations = document.querySelectorAll(".navigation");
       const gridContent = document.querySelector(".grid-content");
 
-      const data = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+      const data = [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+      ];
 
       function selectTheme() {
         const html = document.querySelector("html");
@@ -36,12 +49,21 @@
       function renderData(data) {
         const innerHtml = data
           .map((el) => {
-            return `<div><img src="https://picsum.photos/id/${
-              230 + Number(el)
+            return `<div class="img-wrapper loading"><img src="https://picsum.photos/id/${
+              250 + Number(el)
             }/400/200" style="width: 100%"/></div>`;
           })
           .join("");
         gridContent.innerHTML = innerHtml;
+
+        const allImages = gridContent.querySelectorAll("img");
+        allImages.forEach((img) => {
+          img.onload = () => {
+            const wrapper = img.closest(".img-wrapper");
+            wrapper.classList.remove("loading");
+            wrapper.classList.add("loaded");
+          };
+        });
       }
 
       function filterData() {
@@ -51,13 +73,11 @@
         let newData = [...data];
         switch (this.textContent) {
           case "all":
-            renderData(newData);
             break;
           case "type1":
           case "type3":
           case "type5":
             newData = data.filter((_, index) => index % 2);
-            renderData(newData);
             break;
           case "type2":
           case "type4":
@@ -65,11 +85,10 @@
             newData = data.filter((_, index) => {
               return index % 2 !== 1;
             });
-            renderData(newData);
             break;
           default:
-            renderData(newData);
         }
+        renderData(newData);
       }
 
       colorLabels.forEach((label) => {
@@ -116,7 +135,7 @@
 
       <header>
         <div class="color-select">
-          <span class="current-theme">select theme</span>
+          <span class="current-theme">theme:'black'</span>
           <label
             class="color-label black"
             data-color="black"

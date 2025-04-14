@@ -286,9 +286,43 @@ footer {
     color: #fff;
     border: 1px solid #565656;
   }
+}
 
-  & img {
-    object-fit: cover;
-    height: 100%;
+.img-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.img-wrapper.loading::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border: 3px solid #ccc;
+  border-top: 3px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  z-index: 1;
+}
+
+.img-wrapper img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.img-wrapper.loaded img {
+  opacity: 1;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
