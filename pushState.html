@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <script>
+    window.onload = function () {
+      const aTags = document.querySelectorAll("a:not([data-id])");
+      const content = document.getElementById("content");
+
+      const routes = {
+        "/pushState": () => `<h1>home page</h1>`,
+        "/about": () => `<h1>about page</h1>`,
+        "/help": () => `<h1>help page</h1>`,
+        "/shop": () => `<h1>shop page</h1>`,
+      };
+
+      function renderContent(path) {
+        const routeText = routes[path];
+        const render = routeText || (() => "<h1>404 Not Found</h1>");
+        content.innerHTML = render();
+      }
+
+      function changeRoute(e) {
+        e.preventDefault();
+        // this.href會取得絕對路徑的url，所以使用getAttribute 或是 new URL(this.href).pathname
+        // 才能取到相對路徑
+        const path = this.getAttribute("href");
+        if (path) {
+          history.pushState({ id: path }, "", path);
+        }
+        renderContent(path);
+      }
+      aTags.forEach((a) => a.addEventListener("click", changeRoute));
+
+      window.addEventListener("popstate", (e) => {
+        renderContent(filterRoute(location.pathname));
+        console.log(e, "popstate event");
+      });
+
+      function filterRoute(path) {
+        const regex = /\.html$/i;
+        const filterPath = path.replace(regex, "");
+        return filterPath;
+      }
+
+      renderContent(filterRoute(location.pathname));
+    };
+  </script>
+  <body>
+    <a href="/pushState">home</a>
+    <a href="/about">about</a>
+    <a href="/help">help</a>
+    <a href="/shop">shop</a>
+    <a href="/no">no page</a>
+    <h2 id="content">home page</h2>
+    <article>
+      <h3>利用history.pushState去更換url，再利用JS去控制要顯示的畫面內容</h3>
+      <p>
+        監聽事件中有一個 "popstate"
+        可以在history.go()、history.goBack()、history.forward()觸發事件
+      </p>
+      <p>pushState方法不會觸發 "popstate"事件</p>
+      <p>
+        pushState(物件, 棄用的, url)
+        <br />
+        pushState(null, "", "/test");
+        <br />
+        物件中可以放資料，會在popstate 事件中取到。取用方法 e.state
+      </p>
+    </article>
+    <p>
+      <strong>
+        pushState有一個問題:
+        跳轉url之後如果重新整理畫面，會發送請求到伺服器，但伺服器沒有對應的url，所以會報錯
+        <br>
+        舉例錯誤 : Cannot GET /help
+      </strong>
+    </p>
+    <P>
+      早期一點是使用url 的hash變更去實現SPA，監聽hashChange事件
+    </P>
+
+    <a data-id="test" target="_blank" href="https://vue3js.cn/interview/vue/spa.html#%E4%B8%89%E3%80%81%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAspa">參考資料</a>
+
+    <script
+      src="https://kit.fontawesome.com/10662d5b44.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
